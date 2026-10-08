@@ -1,9 +1,9 @@
-package com.playlist_service.api.core.dto.Musica;
+package com.playlist_service.api.core.dto.Music;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record MusicaRequestDTO(
+public record MusicRequestDTO(
         @NotBlank(message = "O título é obrigatório") String titulo,
         @NotBlank(message = "O artista é obrigatório") String atista,
         @NotBlank(message = "O genero é obrigatório") String genero,
