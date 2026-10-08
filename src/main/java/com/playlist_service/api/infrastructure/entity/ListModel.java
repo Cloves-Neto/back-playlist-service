@@ -1,0 +1,35 @@
+package com.playlist_service.api.infrastructure.entity;
+
+import java.util.ArrayList;
+import java.util.UUID;
+import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "lists")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ListModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private String nome;
+
+    @Column(nullable = false)
+    private String descricao;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "list_musica",
+            joinColumns = @JoinColumn(name = "list_id"),
+            inverseJoinColumns = @JoinColumn(name = "musica_id")
+    )
+    @Builder.Default
+    private List<MusicModel> musicas = new ArrayList<>();
+}
