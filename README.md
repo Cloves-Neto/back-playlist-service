@@ -91,10 +91,24 @@ Os testes cobrem:
 
 ## ⚙️ Como Executar a Aplicação
 
-A aplicação possui um banco de dados embutido em memória e tudo o que você precisa é do Java 21 instalado (ou simplesmente utilizar o Maven Wrapper incluído).
+### 📋 Pré-requisitos
+Antes de começar, você precisará ter as seguintes ferramentas instaladas em sua máquina:
+- **[Git](https://git-scm.com)** (para clonar o repositório).
+- **[Java 21 (JDK)](https://adoptium.net/)** (obrigatório para compilar e rodar a aplicação).
+- *(Opcional)* **[Maven](https://maven.apache.org/)** (o projeto já inclui o `mvnw` / Maven Wrapper, então não é estritamente obrigatório ter o Maven instalado globalmente).
 
-### Passo 1: Rodar a aplicação
-Na raiz do projeto, execute o comando:
+### Passo 1: Clonar o Repositório
+Abra o seu terminal e rode o comando abaixo para clonar o projeto:
+```bash
+git clone https://github.com/Cloves-Neto/back-playlist-service.git
+```
+Em seguida, entre na pasta do projeto:
+```bash
+cd back-playlist-service
+```
+
+### Passo 2: Rodar a Aplicação
+A aplicação possui um banco de dados embutido em memória (H2), o que significa que não é necessário instalar nem configurar nenhum banco externo. Para iniciar o servidor, basta executar na raiz do projeto:
 
 **No Windows:**
 ```cmd
@@ -105,16 +119,16 @@ Na raiz do projeto, execute o comando:
 ```bash
 ./mvnw spring-boot:run
 ```
-*(A aplicação estará rodando na porta `http://localhost:8080`)*
+*(Aguarde o Maven baixar as dependências na primeira vez. Quando concluir, a aplicação estará rodando nativamente na porta `http://localhost:8080`)*
 
-### Passo 2: Acessar o Banco de Dados H2 (Opcional)
+### Passo 3: Acessar o Banco de Dados H2 (Opcional)
 Se quiser visualizar as tabelas do H2:
 - **URL do Console**: `http://localhost:8080/h2-console`
 - **JDBC URL**: `jdbc:h2:mem:playlistdb`
 - **User Name**: `SA`
 - **Password**: *(deixe em branco)*
 
-### Passo 3: Executar a Suíte de Testes
+### Passo 4: Executar a Suíte de Testes
 Para garantir que todos os testes estão passando:
 
 **No Windows:**
@@ -127,7 +141,7 @@ Para garantir que todos os testes estão passando:
 ./mvnw test
 ```
 
-### Passo 4: Testar os Endpoints via Postman
+### Passo 5: Testar os Endpoints via Postman
 Na pasta `docs/` na raiz do projeto, existe um arquivo chamado **`Playlist_Service.postman_collection.json`**. 
 1. Abra o seu Postman.
 2. Clique em `Import` e arraste esse arquivo.
