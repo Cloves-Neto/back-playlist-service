@@ -32,6 +32,11 @@ public class ListMusicAdder {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Playlist não encontrada!"));
 
         List<MusicModel> musicsToAdd = musicRepository.findAllById(request.musicIds());
+
+        if (musicsToAdd.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhuma das músicas informadas foi encontrada!");
+        }
+
         list.getMusics().addAll(musicsToAdd);
 
         ListModel saved = listRepository.save(list);
