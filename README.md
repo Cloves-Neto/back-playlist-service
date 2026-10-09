@@ -1,5 +1,13 @@
 # Playlist Service API 🎵
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java" />
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot" />
+  <img src="https://img.shields.io/badge/Apache_Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven" />
+  <img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white" alt="Hibernate" />
+  <img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=junit5&logoColor=white" alt="JUnit 5" />
+</p>
+
 Bem-vindo ao **Playlist Service API**! Este é um serviço backend construído com **Spring Boot** para gerenciamento de listas de reprodução (Playlists) e Músicas. O projeto foi desenhado focando fortemente em boas práticas de engenharia de software, separação de responsabilidades e código limpo.
 
 ---
@@ -126,3 +134,14 @@ Na pasta `docs/` na raiz do projeto, existe um arquivo chamado **`Playlist_Servi
 3. Você terá todas as requisições (Auth, Playlists e Musics) pré-configuradas e prontas para uso. 
 
 *(**Dica:** Lembre-se de primeiro rodar o endpoint de **Register**, depois o de **Login** para gerar o Token JWT. O script da collection vai injetar esse token automaticamente como variável de ambiente em todas as requisições seguidas!)*
+
+---
+
+## 📫 Autor e Contato
+
+**Cloves Neto**
+
+[![Portfólio](https://img.shields.io/badge/Portfolio-devneto.com.br-000000?style=for-the-badge&logo=Vercel&logoColor=white)](https://devneto.com.br)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/cloves-neto)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/5511967338685)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:cvr.neo20@gmail.com)
