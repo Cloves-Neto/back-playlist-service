@@ -13,12 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ListCreatorTest {
@@ -33,13 +32,13 @@ class ListCreatorTest {
 
     @BeforeEach
     void setUp() {
-        requestDTO = new ListRequestDTO("Treino Pesado", "Músicas para academia", Set.of());
+        requestDTO = new ListRequestDTO("Treino Pesado", "Músicas para academia", java.util.List.of());
     }
 
     @Test
     void execute_WhenNameDoesNotExist_ShouldCreateAndReturnPlaylist() {
-        // Arrange
-        when(listRepository.findByNome(requestDTO.nome())).thenReturn(Optional.empty());
+        
+        given(listRepository.findByNome(requestDTO.nome())).willReturn(Optional.empty());
         
         ListModel savedModel = ListModel.builder()
                 .id(UUID.randomUUID())
@@ -47,26 +46,25 @@ class ListCreatorTest {
                 .descricao("Músicas para academia")
                 .build();
                 
-        when(listRepository.save(any(ListModel.class))).thenReturn(savedModel);
+        given(listRepository.save(any(ListModel.class))).willReturn(savedModel);
 
-        // Act
+        
         ListResponseDTO response = listCreator.execute(requestDTO);
 
-        // Assert
         assertNotNull(response);
         assertEquals(savedModel.getId(), response.id());
         assertEquals("Treino Pesado", response.nome());
-        verify(listRepository, times(1)).findByNome(requestDTO.nome());
-        verify(listRepository, times(1)).save(any(ListModel.class));
+        then(listRepository).should(times(1)).findByNome(requestDTO.nome());
+        then(listRepository).should(times(1)).save(any(ListModel.class));
     }
 
     @Test
     void execute_WhenNameAlreadyExists_ShouldThrowResponseStatusException() {
-        // Arrange
+        
         ListModel existingModel = ListModel.builder().nome("Treino Pesado").build();
-        when(listRepository.findByNome(requestDTO.nome())).thenReturn(Optional.of(existingModel));
+        given(listRepository.findByNome(requestDTO.nome())).willReturn(Optional.of(existingModel));
 
-        // Act & Assert
+        
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             listCreator.execute(requestDTO);
         });
@@ -74,7 +72,6 @@ class ListCreatorTest {
         assertEquals(400, exception.getStatusCode().value());
         assertTrue(exception.getReason().contains("Já existe uma playlist com o nome fornecido!"));
         
-        // Garante que não tentou salvar no banco
-        verify(listRepository, never()).save(any());
+        then(listRepository).should(never()).save(any());
     }
 }
