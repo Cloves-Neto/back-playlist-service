@@ -1,8 +1,7 @@
 package com.playlist_service.api.infrastructure.entity;
 
-import java.util.ArrayList;
-import java.util.UUID;
-import java.util.List;
+import java.util.*;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,10 +25,10 @@ public class ListModel {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "list_musica",
+            name = "list_music",
             joinColumns = @JoinColumn(name = "list_id"),
-            inverseJoinColumns = @JoinColumn(name = "musica_id")
+            inverseJoinColumns = @JoinColumn(name = "music_id")
     )
     @Builder.Default
-    private List<MusicModel> musicas = new ArrayList<>();
+    private Set<MusicModel> musics = new HashSet<>();
 }

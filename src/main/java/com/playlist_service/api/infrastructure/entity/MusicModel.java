@@ -2,13 +2,12 @@ package com.playlist_service.api.infrastructure.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.UUID;
-import java.util.List;
-import java.util.ArrayList;
+
+import java.util.*;
 
 
 @Entity
-@Table(name = "musicas")
+@Table(name = "musics")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,7 +33,7 @@ public class MusicModel {
     @Column(nullable = false)
     private String album;
 
-    @ManyToMany(mappedBy = "musicas")
+    @ManyToMany(mappedBy = "musics")
     @Builder.Default
-    private List<ListModel> lists = new ArrayList<>();
+    private Set<ListModel> lists = new HashSet<>();
 }
