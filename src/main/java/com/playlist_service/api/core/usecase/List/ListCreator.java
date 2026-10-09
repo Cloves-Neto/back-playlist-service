@@ -1,6 +1,5 @@
 package com.playlist_service.api.core.usecase.List;
 
-import com.playlist_service.api.core.dto.Music.MusicRequestDTO;
 import com.playlist_service.api.infrastructure.entity.MusicModel;
 import com.playlist_service.api.core.dto.Music.MusicResponseDTO;
 import com.playlist_service.api.infrastructure.entity.ListModel;
@@ -10,6 +9,9 @@ import com.playlist_service.api.infrastructure.repositories.ListRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
@@ -24,6 +26,9 @@ public class ListCreator {
 
     @Transactional
     public ListResponseDTO execute(ListRequestDTO request) {
+        if (listRepository.findByNome(request.nome()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Já existe uma playlist com o nome fornecido!");
+        }
         ListModel list = ListModel.builder()
                 .nome(request.nome())
                 .descricao(request.descricao())
