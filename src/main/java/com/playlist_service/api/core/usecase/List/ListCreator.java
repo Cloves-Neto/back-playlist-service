@@ -17,12 +17,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.playlist_service.api.infrastructure.repositories.MusicRepository;
+
 @Service
 public class ListCreator {
 
     private final ListRepository listRepository;
+    private final MusicRepository musicRepository;
 
-    public ListCreator(ListRepository listRepository) { this.listRepository = listRepository; }
+    public ListCreator(ListRepository listRepository, MusicRepository musicRepository) { 
+        this.listRepository = listRepository;
+        this.musicRepository = musicRepository;
+    }
 
     @Transactional
     public ListResponseDTO execute(ListRequestDTO request) {
@@ -33,6 +39,12 @@ public class ListCreator {
                 .nome(request.nome())
                 .descricao(request.descricao())
                 .build();
+
+        if (request.musicIds() != null && !request.musicIds().isEmpty()) {
+            List<MusicModel> existingMusics = musicRepository.findAllById(request.musicIds());
+            list.getMusics().addAll(existingMusics);
+        }
+
         if (request.musicas() != null && !request.musicas().isEmpty()) {
             Set<MusicModel> musics = request.musicas().stream()
                     .map(dto -> MusicModel.builder()

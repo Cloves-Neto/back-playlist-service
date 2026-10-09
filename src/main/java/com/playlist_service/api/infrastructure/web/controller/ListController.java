@@ -2,10 +2,12 @@ package com.playlist_service.api.infrastructure.web.controller;
 
 import com.playlist_service.api.core.dto.List.ListRequestDTO;
 import com.playlist_service.api.core.dto.List.ListResponseDTO;
+import com.playlist_service.api.core.dto.Music.MusicAdditionRequestDTO;
 import com.playlist_service.api.core.dto.Music.MusicRemovalRequestDTO;
 import com.playlist_service.api.core.usecase.List.ListCreator;
 import com.playlist_service.api.core.usecase.List.ListFinder;
 import com.playlist_service.api.core.usecase.List.ListDeleteByName;
+import com.playlist_service.api.core.usecase.List.ListMusicAdder;
 import com.playlist_service.api.core.usecase.List.ListMusicRemover;
 import com.playlist_service.api.core.usecase.List.ListFinderByName;
 
@@ -24,13 +26,15 @@ public class ListController {
     private final ListCreator listCreator;
     private final ListFinder listFinder;
     private final ListDeleteByName listDeleteByName;
+    private final ListMusicAdder listMusicAdder;
     private final ListMusicRemover listMusicRemover;
     private final ListFinderByName listFinderByName;
 
-    public ListController(ListCreator listCreator, ListFinder listFinder, ListDeleteByName listDeleteByName, ListMusicRemover listMusicRemover, ListFinderByName listFinderByName){ 
+    public ListController(ListCreator listCreator, ListFinder listFinder, ListDeleteByName listDeleteByName, ListMusicAdder listMusicAdder, ListMusicRemover listMusicRemover, ListFinderByName listFinderByName){ 
         this.listCreator = listCreator; 
         this.listFinder = listFinder;
         this.listDeleteByName = listDeleteByName;
+        this.listMusicAdder = listMusicAdder;
         this.listMusicRemover = listMusicRemover;
         this.listFinderByName = listFinderByName;
     }
@@ -56,6 +60,14 @@ public class ListController {
     @GetMapping("/{listName}")
     public ResponseEntity<ListResponseDTO> getListByName(@PathVariable String listName){
         return ResponseEntity.ok(listFinderByName.execute(listName));
+    }
+
+    @PostMapping("/{listName}/musics")
+    public ResponseEntity<ListResponseDTO> addMusics(
+            @PathVariable String listName,
+            @Valid @RequestBody MusicAdditionRequestDTO request){
+
+        return ResponseEntity.ok(listMusicAdder.execute(listName, request));
     }
 
     @DeleteMapping("/{listName}")

@@ -25,6 +25,9 @@ class ListCreatorTest {
     @Mock
     private ListRepository listRepository;
 
+    @Mock
+    private com.playlist_service.api.infrastructure.repositories.MusicRepository musicRepository;
+
     @InjectMocks
     private ListCreator listCreator;
 
