@@ -13,16 +13,19 @@ Construída com Clean/Hexagonal Architecture, Screaming Architecture e princípi
 <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" alt="Spring Security" />
 <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
 <img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white" alt="Hibernate" />
-<img src="https://img.shields.io/badge/H2_Database-1E3A8A?style=for-the-badge&logo=databricks&logoColor=white" alt="H2" />
+<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+<img src="https://img.shields.io/badge/Neon-00E599?style=for-the-badge&logoColor=black" alt="Neon" />
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+<img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black" alt="Render" />
 <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven" />
 <img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=junit5&logoColor=white" alt="JUnit 5" />
 <img src="https://img.shields.io/badge/Mockito-78A641?style=for-the-badge&logoColor=white" alt="Mockito" />
 
 <br/><br/>
 
-<img src="https://img.shields.io/badge/status-concluído-success?style=flat-square" alt="Status" />
-<img src="https://img.shields.io/badge/testes-19%20passando-brightgreen?style=flat-square" alt="Testes" />
-<img src="https://img.shields.io/badge/arquitetura-hexagonal-blueviolet?style=flat-square" alt="Arquitetura" />
+<img src="https://img.shields.io/badge/status-em%20produção-success?style=flat-square" alt="Status" />
+<img src="https://img.shields.io/badge/testes-JUnit%205%20%2B%20Mockito-brightgreen?style=flat-square" alt="Testes" />
+<img src="https://img.shields.io/badge/arquitetura-ports%20%26%20adapters-blueviolet?style=flat-square" alt="Arquitetura" />
 
 <br/><br/>
 
@@ -31,7 +34,9 @@ Construída com Clean/Hexagonal Architecture, Screaming Architecture e princípi
 [Arquitetura](#️-arquitetura) •
 [SOLID](#-princípios-solid) •
 [Testes](#-testes-unitários) •
+[Variáveis de Ambiente](#-variáveis-de-ambiente) •
 [Como Executar](#️-como-executar) •
+[Deploy](#-deploy-render--neon) •
 [Contato](#-autor-e-contato)
 
 </div>
@@ -45,7 +50,13 @@ O **Playlist Service API** é um serviço backend para criar, consultar, editar 
 O foco do projeto é **engenharia de software**: domínio isolado, casos de uso com uma única responsabilidade e testes unitários cobrindo as regras de negócio.
 
 > [!NOTE]
-> O banco de dados é o **H2 em memória**. Você não precisa instalar nem configurar banco nenhum. Os dados são apagados toda vez que a aplicação reinicia.
+> O banco de dados é **PostgreSQL** (hospedado no **Neon** em produção). A conexão é feita pela variável de ambiente `DB_URL` — **nenhuma credencial fica no código**. As tabelas são criadas/atualizadas automaticamente pelo Hibernate (`ddl-auto=update`).
+
+| Ambiente | URL |
+| :--- | :--- |
+| 🌐 Frontend (Vercel) | [app-playlist-service.vercel.app](https://app-playlist-service.vercel.app) |
+| ⚙️ Backend (Render) | Web Service Docker no Render |
+| 🗄️ Banco (Neon) | PostgreSQL serverless (`sa-east-1`) |
 
 ---
 
@@ -69,6 +80,7 @@ O foco do projeto é **engenharia de software**: domínio isolado, casos de uso 
       ✅ Listar todas<br/>
       ✅ Buscar por nome<br/>
       ✅ Excluir por nome<br/>
+      ✅ Adicionar músicas à playlist<br/>
       ✅ Remover músicas da playlist
     </td>
     <td>
@@ -85,7 +97,7 @@ O foco do projeto é **engenharia de software**: domínio isolado, casos de uso 
 ## 🔗 Endpoints
 
 > [!IMPORTANT]
-> Somente `/auth/register`, `/auth/login` e `/h2-console` são públicos. Todas as outras rotas exigem o header:
+> Somente `POST /auth/register` e `POST /auth/login` são públicos. Todas as outras rotas exigem o header:
 > `Authorization: Bearer <seu_token_jwt>`
 
 <details open>
@@ -135,6 +147,7 @@ O foco do projeto é **engenharia de software**: domínio isolado, casos de uso 
 | ![POST](https://img.shields.io/badge/POST-FFB400?style=flat-square) | `/lists` | Cria uma playlist | 🔒 |
 | ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat-square) | `/lists` | Lista todas as playlists | 🔒 |
 | ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat-square) | `/lists/{listName}` | Busca uma playlist pelo nome | 🔒 |
+| ![POST](https://img.shields.io/badge/POST-FFB400?style=flat-square) | `/lists/{listName}/musics` | Adiciona músicas existentes à playlist | 🔒 |
 | ![DELETE](https://img.shields.io/badge/DELETE-F93E3E?style=flat-square) | `/lists/{listName}` | Exclui uma playlist pelo nome | 🔒 |
 | ![DELETE](https://img.shields.io/badge/DELETE-F93E3E?style=flat-square) | `/lists/{listName}/musics` | Remove músicas da playlist | 🔒 |
 
@@ -160,7 +173,7 @@ O foco do projeto é **engenharia de software**: domínio isolado, casos de uso 
 </details>
 
 <details>
-<summary>📄 Exemplo de body (remover músicas)</summary>
+<summary>📄 Exemplo de body (adicionar / remover músicas)</summary>
 
 ```json
 {
@@ -242,11 +255,11 @@ sequenceDiagram
 | `spring-boot-starter-security` | Proteção de rotas e autenticação |
 | `spring-boot-starter-validation` | Validação dos DTOs (`@Valid`, `@NotBlank`, `@NotNull`) |
 | `com.auth0:java-jwt` (4.4.0) | Geração e validação dos tokens JWT |
-| `com.h2database:h2` | Banco relacional em memória |
-| `spring-boot-h2console` | Console web do H2 |
+| `org.postgresql:postgresql` | Driver JDBC do PostgreSQL (Neon) |
 | `lombok` | Menos boilerplate (`@Getter`, `@Setter`, `@Builder`...) |
 | `*-test` starters (JUnit 5 + Mockito) | Testes unitários no estilo BDD |
 | **Maven Wrapper** | Build sem precisar instalar o Maven |
+| **Docker** (`eclipse-temurin:21`) | Imagem multi-stage (JDK no build, JRE no runtime) |
 
 </details>
 
@@ -258,43 +271,82 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    Client(["🌐 Cliente HTTP"])
+    Client(["🌐 Cliente HTTP / Frontend Vercel"])
 
-    subgraph INFRA["⚙️ infrastructure (adaptadores)"]
+    subgraph INFRA_IN["⚙️ infrastructure (entrada)"]
         direction TB
+        SEC["security + config (JWT, CORS)"]
         CTRL["web/controller"]
-        SEC["security + config"]
-        REPO["repositories"]
-        ENT["entity"]
     end
 
-    subgraph CORE["💎 core (domínio)"]
+    subgraph CORE["💎 core (domínio puro)"]
         direction TB
         UC["usecase"]
-        DTO["dto"]
+        DOM["domain"]
+        PORT["ports/out (interfaces)"]
     end
 
-    DB[("🗄️ H2")]
+    subgraph INFRA_OUT["⚙️ infrastructure (saída)"]
+        direction TB
+        ADP["adapters/out/persistence"]
+        MAP["mapper (Domain ⇄ Model)"]
+        REPO["repositories (Spring Data)"]
+        BCRYPT["adapters/out/security"]
+    end
+
+    DB[("🐘 PostgreSQL (Neon)")]
 
     Client --> SEC --> CTRL
     CTRL -->|"DTO"| UC
-    UC -->|"DTO"| CTRL
-    UC --> REPO
-    REPO --> ENT
-    REPO --> DB
+    UC --> DOM
+    UC --> PORT
+    ADP -.->|"implementa"| PORT
+    BCRYPT -.->|"implementa"| PORT
+    ADP --> MAP
+    ADP --> REPO --> DB
 ```
 
 <details>
-<summary><b>💎 Hexagonal / Clean Architecture</b></summary>
+<summary><b>💎 Hexagonal / Ports & Adapters</b></summary>
 
 <br/>
 
 O código é separado de dentro para fora:
 
-- **`core/`**: o centro. Contém as regras de negócio (`usecase`) e os contratos de entrada e saída (`dto`). Não depende de controllers nem de detalhes de HTTP.
-- **`infrastructure/`**: a borda. Contém os adaptadores: controllers REST, repositórios JPA, entidades, filtros de segurança e configurações do Spring.
+- **`core/domain`**: modelos de domínio puros (`ListDomain`, `MusicDomain`, `UserDomain`) — **sem anotações JPA ou Spring**.
+- **`core/ports/out`**: contratos que o domínio precisa do mundo externo (`ListDatabasePort`, `MusicDatabasePort`, `UserDatabasePort`, `PasswordEncoderPort`).
+- **`core/usecase`**: regras de negócio. Dependem **apenas** dos ports, nunca de `JpaRepository` ou do Spring Security.
+- **`infrastructure/adapters/out`**: implementações dos ports. Os `*PersistenceAdapter` usam os repositórios Spring Data e os `*Mapper` convertem `Domain ⇄ Model`. O `BCryptPasswordEncoderAdapter` implementa o `PasswordEncoderPort`.
+- **`infrastructure/web`, `security`, `config`**: adaptadores de entrada (REST, filtro JWT, CORS).
 
-Os controllers conversam com o `core` **somente por meio de DTOs**. Assim, mudar a camada web ou o banco não altera a regra de negócio.
+Resultado: trocar o banco (H2 → PostgreSQL, por exemplo) ou o algoritmo de hash **não altera nenhum caso de uso**.
+
+</details>
+
+<details>
+<summary><b>🔁 Fluxo de uma requisição</b></summary>
+
+<br/>
+
+```mermaid
+sequenceDiagram
+    participant C as Controller
+    participant U as UseCase
+    participant P as Port (interface)
+    participant A as PersistenceAdapter
+    participant M as Mapper
+    participant R as JpaRepository
+
+    C->>U: RequestDTO
+    U->>P: Domain
+    P->>A: (injeção do Spring)
+    A->>M: Domain → Model
+    A->>R: save(Model)
+    R-->>A: Model
+    A->>M: Model → Domain
+    A-->>U: Domain
+    U-->>C: ResponseDTO
+```
 
 </details>
 
@@ -303,7 +355,7 @@ Os controllers conversam com o `core` **somente por meio de DTOs**. Assim, mudar
 
 <br/>
 
-A estrutura de pastas mostra **o que o sistema faz**, e não qual framework ele usa. Ao abrir `core/usecase`, você lê as ações do domínio: `ListCreator`, `ListMusicRemover`, `MusicEditor`, `MusicDeleteById`.
+A estrutura de pastas mostra **o que o sistema faz**, e não qual framework ele usa. Ao abrir `core/usecase`, você lê as ações do domínio: `ListCreator`, `ListMusicAdder`, `ListMusicRemover`, `MusicEditor`, `MusicDeleteById`, `UserRegistrar`.
 
 O domínio é o protagonista da organização. Não existe um `PlaylistService` genérico com tudo misturado.
 
@@ -317,16 +369,25 @@ O domínio é o protagonista da organização. Não existe um `PlaylistService` 
 ```text
 src/main/java/com/playlist_service/api
 ├── core
+│   ├── domain          → ListDomain, MusicDomain, UserDomain, UserRole
 │   ├── dto
 │   │   ├── Auth        → AuthenticationDTO, RegisterDTO, LoginResponseDTO
 │   │   ├── List        → ListRequestDTO, ListResponseDTO
-│   │   └── Music       → MusicRequestDTO, MusicResponseDTO, MusicRemovalRequestDTO
+│   │   └── Music       → MusicRequestDTO, MusicResponseDTO,
+│   │                     MusicAdditionRequestDTO, MusicRemovalRequestDTO
+│   ├── ports/out       → ListDatabasePort, MusicDatabasePort,
+│   │                     UserDatabasePort, PasswordEncoderPort
 │   └── usecase
+│       ├── Auth        → UserRegistrar
 │       ├── List        → ListCreator, ListFinder, ListFinderByName,
-│       │                 ListDeleteByName, ListMusicRemover
+│       │                 ListDeleteByName, ListMusicAdder, ListMusicRemover
 │       └── Music       → MusicCreator, MusicFinderByName, MusicEditor, MusicDeleteById
 └── infrastructure
-    ├── config          → SecurityConfig
+    ├── adapters/out
+    │   ├── persistence → List/Music/UserPersistenceAdapter
+    │   │   └── mapper  → ListMapper, MusicMapper, UserMapper
+    │   └── security    → BCryptPasswordEncoderAdapter
+    ├── config          → SecurityConfig (rotas públicas + CORS)
     ├── entity          → ListModel, MusicModel, UserModel, UserRole
     ├── repositories    → ListRepository, MusicRepository, UserRepository
     ├── security        → SecurityFilter, TokenService, AuthorizationService
@@ -376,9 +437,9 @@ erDiagram
 | :--- | :--- |
 | **S** — Responsabilidade Única | Cada caso de uso faz uma única coisa. `ListCreator` só cria; `ListFinderByName` só busca. |
 | **O** — Aberto/Fechado | Novas funcionalidades entram como **novos** casos de uso, sem alterar os que já existem. |
-| **L** — Substituição de Liskov | Os repositórios estendem `JpaRepository` e podem ser trocados por qualquer implementação do contrato (ex.: mocks nos testes). |
+| **L** — Substituição de Liskov | Qualquer implementação de um port (`*PersistenceAdapter`, mocks nos testes) pode substituir outra sem quebrar os casos de uso. |
 | **I** — Segregação de Interfaces | Os controllers recebem só os casos de uso de que precisam, em vez de um "God Service" gigante. |
-| **D** — Inversão de Dependência | O `core` depende de abstrações (interfaces de repositório). O Spring injeta as implementações pelo construtor. |
+| **D** — Inversão de Dependência | O `core` depende só dos **ports** (interfaces próprias). A infraestrutura implementa esses ports e o Spring injeta os adapters pelo construtor. |
 
 ---
 
@@ -386,12 +447,12 @@ erDiagram
 
 <div align="center">
 
-![Tests](https://img.shields.io/badge/19_testes-passando-brightgreen?style=for-the-badge&logo=junit5&logoColor=white)
+![Tests](https://img.shields.io/badge/JUnit_5-testes_unitários-brightgreen?style=for-the-badge&logo=junit5&logoColor=white)
 ![BDD](https://img.shields.io/badge/estilo-BDDMockito-78A641?style=for-the-badge)
 
 </div>
 
-Os testes usam **JUnit 5** e **Mockito**, no estilo BDD (`given / willReturn / then`). Eles cobrem o caminho feliz e os cenários de erro (recurso inexistente, duplicado etc.).
+Os testes usam **JUnit 5** e **Mockito**, no estilo BDD (`given / willReturn / then`). Eles cobrem o caminho feliz e os cenários de erro (recurso inexistente, duplicado etc.). Como os casos de uso dependem apenas dos **ports**, os testes mockam as interfaces do domínio — sem banco e sem Spring.
 
 <details>
 <summary><b>📋 Ver classes de teste</b></summary>
@@ -404,6 +465,7 @@ Os testes usam **JUnit 5** e **Mockito**, no estilo BDD (`given / willReturn / t
 | 📂 Playlists | `ListFinderTest` |
 | 📂 Playlists | `ListFinderByNameTest` |
 | 📂 Playlists | `ListDeleteByNameTest` |
+| 📂 Playlists | `ListMusicAdderTest` |
 | 📂 Playlists | `ListMusicRemoverTest` |
 | 🎶 Músicas | `MusicCreatorTest` |
 | 🎶 Músicas | `MusicFinderByNameTest` |
@@ -416,6 +478,24 @@ Os testes usam **JUnit 5** e **Mockito**, no estilo BDD (`given / willReturn / t
 
 ---
 
+## 🔐 Variáveis de Ambiente
+
+Nenhuma credencial é versionada. O [`application.properties`](src/main/resources/application.properties) apenas referencia variáveis:
+
+```properties
+spring.datasource.url=${DB_URL}
+```
+
+| Variável | Obrigatória | Descrição | Exemplo |
+| :--- | :---: | :--- | :--- |
+| `DB_URL` | ✅ | URL JDBC completa do PostgreSQL (com usuário, senha e SSL) | `jdbc:postgresql://<host>/<db>?user=<user>&password=<senha>&sslmode=require` |
+| `API_SECURITY_TOKEN_SECRET` | ⚠️ Recomendada | Segredo usado para assinar os JWT (`api.security.token.secret`). Sem ela, usa um valor padrão inseguro | `uma-string-longa-e-aleatoria` |
+
+> [!CAUTION]
+> Nunca faça commit da `DB_URL` real ou do segredo JWT. Configure-os apenas no painel do Render (produção) ou no seu terminal/IDE (local).
+
+---
+
 ## ⚙️ Como Executar
 
 ### 📋 Pré-requisitos
@@ -423,9 +503,13 @@ Os testes usam **JUnit 5** e **Mockito**, no estilo BDD (`given / willReturn / t
 | Ferramenta | Obrigatório | Observação |
 | :--- | :---: | :--- |
 | [Git](https://git-scm.com) | ✅ | Para clonar o repositório |
-| [Java 21 (JDK)](https://adoptium.net/) | ✅ | Para compilar e rodar |
+| [Java 21 (JDK)](https://adoptium.net/) | ✅* | Para rodar sem Docker |
+| [Docker](https://www.docker.com/) | ✅* | Alternativa ao JDK local |
+| Banco PostgreSQL | ✅ | Neon (grátis) ou um Postgres local |
 | [Maven](https://maven.apache.org/) | ❌ | O projeto já inclui o Maven Wrapper (`mvnw`) |
 | [Postman](https://www.postman.com/) | ❌ | Recomendado para testar os endpoints |
+
+<sub>* Basta um dos dois: JDK 21 **ou** Docker.</sub>
 
 > [!TIP]
 > Confira se o Java está instalado com `java -version`. A saída deve mostrar a versão **21**.
@@ -437,12 +521,14 @@ git clone https://github.com/Cloves-Neto/back-playlist-service.git
 cd back-playlist-service
 ```
 
-### 2️⃣ Rodar a aplicação
+### 2️⃣ Rodar a aplicação (local)
 
 <details open>
-<summary>🪟 <b>Windows</b></summary>
+<summary>🪟 <b>Windows (PowerShell)</b></summary>
 
-```cmd
+```powershell
+$env:DB_URL="jdbc:postgresql://<host>/<db>?user=<user>&password=<senha>&sslmode=require"
+$env:API_SECURITY_TOKEN_SECRET="meu-segredo-local"
 .\mvnw.cmd spring-boot:run
 ```
 
@@ -452,11 +538,31 @@ cd back-playlist-service
 <summary>🐧 <b>Linux / macOS</b></summary>
 
 ```bash
+export DB_URL="jdbc:postgresql://<host>/<db>?user=<user>&password=<senha>&sslmode=require"
+export API_SECURITY_TOKEN_SECRET="meu-segredo-local"
 chmod +x mvnw
 ./mvnw spring-boot:run
 ```
 
 </details>
+
+<details>
+<summary>🐳 <b>Docker</b></summary>
+
+```bash
+docker build -t playlist-service .
+docker run -p 8080:8080 \
+  -e DB_URL="jdbc:postgresql://<host>/<db>?user=<user>&password=<senha>&sslmode=require" \
+  -e API_SECURITY_TOKEN_SECRET="meu-segredo-local" \
+  playlist-service
+```
+
+O [`Dockerfile`](Dockerfile) é multi-stage: compila com `eclipse-temurin:21-jdk-alpine` e roda com `eclipse-temurin:21-jre-alpine` (imagem final enxuta).
+
+</details>
+
+> [!TIP]
+> Em IDEs como IntelliJ, configure as variáveis em **Run → Edit Configurations → Environment variables**.
 
 A API sobe em **`http://localhost:8080`**.
 
@@ -483,16 +589,7 @@ A API sobe em **`http://localhost:8080`**.
 
 </details>
 
-### 4️⃣ Acessar o console do H2 (opcional)
-
-| Campo | Valor |
-| :--- | :--- |
-| URL | `http://localhost:8080/h2-console` |
-| JDBC URL | `jdbc:h2:mem:playlistdb` |
-| User Name | `sa` |
-| Password | *(em branco)* |
-
-### 5️⃣ Testar com o Postman
+### 4️⃣ Testar com o Postman
 
 1. Abra o Postman e clique em **Import**.
 2. Selecione o arquivo [`docs/Playlist_Service.postman_collection.json`](docs/Playlist_Service.postman_collection.json).
@@ -501,6 +598,55 @@ A API sobe em **`http://localhost:8080`**.
 
 > [!IMPORTANT]
 > O request de **Login** tem um script que salva o token na variável `{{jwt_token}}`. Para isso funcionar, deixe um **Environment** selecionado no Postman.
+
+---
+
+## 🚀 Deploy (Render + Neon)
+
+```mermaid
+flowchart LR
+    GH["📦 GitHub (branch deploy)"] -->|"auto-deploy"| R["⚙️ Render (Docker)"]
+    V["🌐 Vercel (Next.js)"] -->|"HTTPS + JWT"| R
+    R -->|"JDBC + SSL"| N[("🐘 Neon PostgreSQL")]
+```
+
+### 1️⃣ Banco no Neon
+
+1. Crie um projeto em [neon.tech](https://neon.tech) (região `sa-east-1` recomendada).
+2. Copie a connection string no formato **JDBC** (com `sslmode=require`).
+
+### 2️⃣ Web Service no Render
+
+| Configuração | Valor |
+| :--- | :--- |
+| Tipo | **Web Service** |
+| Repositório / Branch | `back-playlist-service` / `deploy` |
+| Runtime | **Docker** (usa o `Dockerfile` da raiz) |
+| Porta | `8080` |
+| Environment | `DB_URL` e `API_SECURITY_TOKEN_SECRET` |
+
+> [!NOTE]
+> O `Dockerfile` executa `chmod +x ./mvnw` antes do build. Sem isso o Render falha com `./mvnw: Permission denied` (exit code 126), pois o bit de execução pode se perder no Git vindo do Windows.
+
+### 3️⃣ Frontend na Vercel
+
+No projeto do frontend, configure a variável:
+
+| Variável | Valor |
+| :--- | :--- |
+| `NEXT_PUBLIC_API_URL` | URL pública do serviço no Render (ex.: `https://<seu-servico>.onrender.com`) |
+
+### 🌍 CORS
+
+O [`SecurityConfig`](src/main/java/com/playlist_service/api/infrastructure/config/SecurityConfig.java) libera as origens:
+
+- `http://localhost:3000` / `http://127.0.0.1:3000` (desenvolvimento)
+- `https://app-playlist-service.vercel.app` (produção)
+
+Para um novo domínio de frontend, adicione-o em `setAllowedOrigins`.
+
+> [!TIP]
+> Acessar a raiz do backend no navegador retorna **403 Forbidden** — isso é esperado: toda rota fora de `/auth/**` exige JWT. No plano gratuito, o Render hiberna o serviço após inatividade, então a primeira requisição pode levar ~50s.
 
 ---
 
