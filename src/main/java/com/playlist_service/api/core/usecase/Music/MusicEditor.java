@@ -1,9 +1,9 @@
 package com.playlist_service.api.core.usecase.Music;
 
+import com.playlist_service.api.core.domain.MusicDomain;
 import com.playlist_service.api.core.dto.Music.MusicRequestDTO;
 import com.playlist_service.api.core.dto.Music.MusicResponseDTO;
-import com.playlist_service.api.infrastructure.entity.MusicModel;
-import com.playlist_service.api.infrastructure.repositories.MusicRepository;
+import com.playlist_service.api.core.ports.out.MusicDatabasePort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,14 +13,14 @@ import java.util.UUID;
 @Service
 public class MusicEditor {
 
-    private final MusicRepository musicRepository;
+    private final MusicDatabasePort musicDatabasePort;
 
-    public MusicEditor(MusicRepository musicRepository) {
-        this.musicRepository = musicRepository;
+    public MusicEditor(MusicDatabasePort musicDatabasePort) {
+        this.musicDatabasePort = musicDatabasePort;
     }
 
     public MusicResponseDTO execute(UUID id, MusicRequestDTO request) {
-        MusicModel music = musicRepository.findById(id)
+        MusicDomain music = musicDatabasePort.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Música não encontrada!"));
 
         music.setTitulo(request.titulo());
@@ -29,7 +29,7 @@ public class MusicEditor {
         music.setAno(request.ano());
         music.setAlbum(request.album());
 
-        MusicModel saved = musicRepository.save(music);
+        MusicDomain saved = musicDatabasePort.save(music);
 
         return new MusicResponseDTO(
                 saved.getId(),

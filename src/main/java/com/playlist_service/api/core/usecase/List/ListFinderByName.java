@@ -1,9 +1,9 @@
 package com.playlist_service.api.core.usecase.List;
 
+import com.playlist_service.api.core.domain.ListDomain;
 import com.playlist_service.api.core.dto.List.ListResponseDTO;
 import com.playlist_service.api.core.dto.Music.MusicResponseDTO;
-import com.playlist_service.api.infrastructure.entity.ListModel;
-import com.playlist_service.api.infrastructure.repositories.ListRepository;
+import com.playlist_service.api.core.ports.out.ListDatabasePort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +15,16 @@ import java.util.stream.Collectors;
 @Service
 public class ListFinderByName {
 
-    private final ListRepository listRepository;
+    private final ListDatabasePort listDatabasePort;
 
-    public ListFinderByName(ListRepository listRepository) {
-        this.listRepository = listRepository;
+    public ListFinderByName(ListDatabasePort listDatabasePort) {
+        this.listDatabasePort = listDatabasePort;
     }
 
     @Transactional(readOnly = true)
     public ListResponseDTO execute(String name) {
         // Garantindo que jogue exatamente um 404 Not Found se não achar
-        ListModel list = listRepository.findByNome(name)
+        ListDomain list = listDatabasePort.findByNome(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Playlist não encontrada!"));
 
         List<MusicResponseDTO> musicResponse = list.getMusics().stream()

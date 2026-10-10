@@ -1,22 +1,22 @@
 package com.playlist_service.api.core.usecase.Music;
 
+import com.playlist_service.api.core.domain.MusicDomain;
 import com.playlist_service.api.core.dto.Music.MusicRequestDTO;
 import com.playlist_service.api.core.dto.Music.MusicResponseDTO;
-import com.playlist_service.api.infrastructure.entity.MusicModel;
-import com.playlist_service.api.infrastructure.repositories.MusicRepository;
+import com.playlist_service.api.core.ports.out.MusicDatabasePort;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MusicCreator {
 
-    private final MusicRepository musicRepository;
+    private final MusicDatabasePort musicDatabasePort;
 
-    public MusicCreator(MusicRepository musicRepository) {
-        this.musicRepository = musicRepository;
+    public MusicCreator(MusicDatabasePort musicDatabasePort) {
+        this.musicDatabasePort = musicDatabasePort;
     }
 
     public MusicResponseDTO execute(MusicRequestDTO request) {
-        MusicModel musicModel = MusicModel.builder()
+        MusicDomain music = MusicDomain.builder()
                 .titulo(request.titulo())
                 .artista(request.artista())
                 .genero(request.genero())
@@ -24,7 +24,7 @@ public class MusicCreator {
                 .album(request.album())
                 .build();
 
-        MusicModel saved = musicRepository.save(musicModel);
+        MusicDomain saved = musicDatabasePort.save(music);
 
         return new MusicResponseDTO(
                 saved.getId(),
