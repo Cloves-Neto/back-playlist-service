@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepository repository;
     private final TokenService tokenService;
+    private final com.playlist_service.api.core.usecase.Auth.UserRegistrar userRegistrar;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository repository, TokenService tokenService) {
+    public AuthController(AuthenticationManager authenticationManager, TokenService tokenService, com.playlist_service.api.core.usecase.Auth.UserRegistrar userRegistrar) {
         this.authenticationManager = authenticationManager;
-        this.repository = repository;
         this.tokenService = tokenService;
+        this.userRegistrar = userRegistrar;
     }
 
     @PostMapping("/login")
@@ -42,13 +42,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data){
-        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        UserModel newUser = new UserModel(data.login(), encryptedPassword, data.role());
-
-        this.repository.save(newUser);
-
-        return ResponseEntity.ok().build();
+        try {
+            userRegistrar.execute(data);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
