@@ -1,4 +1,4 @@
-﻿package com.playlist_service.api.core.dto.List;
+package com.playlist_service.api.core.dto.List;
 
 import java.util.UUID;
 import java.util.List;
